@@ -13,9 +13,8 @@ function RegisterForm() {
     event.preventDefault();
     setIsLoading(true);
     try {
-        const response = await axios.post('http://localhost:8080/register', { email, password });
+        const response = await axios.post('http://localhost:8080/register', { email, password,username });
         console.log(response);
-        alert('jkcdsnj')
     } catch (error) {
         setError(error);
     }
@@ -25,15 +24,15 @@ function RegisterForm() {
   return (
     <Form onSubmit={handleSubmit}>
         <Form.Group>
-        <Form.Label>Username</Form.Label>
-        <Form.Control
-          type="username"
-          placeholder="Enter username"
-          value={username}
-          onChange={(event) => setUsername(event.target.value)}
-          required
-        />
-      </Form.Group>
+    <Form.Label>Username</Form.Label>
+    <Form.Control
+      type="text"
+      placeholder="Enter username"
+      value={username}
+      onChange={(event) => setUsername(event.target.value)}
+      required
+    />
+  </Form.Group>
       <Form.Group>
         <Form.Label>Email</Form.Label>
         <Form.Control

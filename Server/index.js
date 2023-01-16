@@ -22,12 +22,12 @@ const connection = mysql2.createConnection({
   connection.connect();
   
   const createUsersTable = `CREATE TABLE IF NOT EXISTS users (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      email VARCHAR(255) NOT NULL UNIQUE,
-      username VARCHAR(255) NOT NULL,
-      password VARCHAR(255) NOT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-  )`;
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)`;
   
   connection.query(createUsersTable, function(err, results) {
       if (err) {
@@ -59,7 +59,7 @@ app.post('/login', (req, res) => {
                 }
                 if (match) {
                     // create jwt token and send it as response
-                    var token = jwt.sign({ username: result[0].username }, process.env.SECRET_KEY);
+                    var token = jwt.sign({ email: result[0].email, username: result[0].username }, process.env.SECRET_KEY);
                     res.status(200).json({ token: token });
                 } else {
                     res.status(401).json({ message: 'Incorrect email or password' });
@@ -76,6 +76,7 @@ app.post('/login', (req, res) => {
 app.post('/register', (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
+    const username = req.body.username;
 
     // hash password
     bcrypt.hash(password, 10, function (err, hashedPassword) {
@@ -84,7 +85,7 @@ app.post('/register', (req, res) => {
             res.status(500).json({ message: 'Error while registering' });
         }
         // store email and hashed password in db
-        connection.query("INSERT INTO users (email, password) VALUES (?, ?)", [email, hashedPassword], function (err, result) {
+        connection.query("INSERT INTO users (email, password, username) VALUES (?, ?, ?)", [email, hashedPassword, username], function (err, result) {
             if (err) {
                 console.log(err);
                 res.status(500).json({ message: 'Error while registering' });

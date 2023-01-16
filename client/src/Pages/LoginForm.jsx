@@ -1,8 +1,8 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-
 import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
+import jwt_decode from 'jwt-decode';
 
 function LoginForm() {
   const [email, setEmail] = useState('');
@@ -16,7 +16,15 @@ function LoginForm() {
     try {
         const response = await axios.post('http://localhost:8080/login', { email, password });
         console.log(response);
-      
+        if (response.status === 200) {
+          localStorage.setItem("token", response.data.token);
+          axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("token")}`;
+          // decode the JWT token and retrieve the user's information
+          const decoded = jwt_decode(localStorage.getItem("token"));
+          console.log(decoded);
+          // you can access the user's information like this:
+          localStorage.setItem("userInfo", {'userEmail':decoded.email, 'userName': decoded.username})
+      }
     } catch (error) {
         setError(error);
     }
@@ -61,3 +69,7 @@ function LoginForm() {
 
 export default LoginForm;
 
+
+// ('test1@example.com', 'password1'),
+// ('test2@example.com', 'password2'),
+// ('test3@example.com', 'password3');

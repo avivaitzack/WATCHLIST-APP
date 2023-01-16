@@ -5,7 +5,7 @@ import RegisterForm from './Pages/RegisterForm';
 export default function App() {
   return (
     <div>
-      <RegisterForm/>
+      <LoginForm/>
     </div>
   )
 }
