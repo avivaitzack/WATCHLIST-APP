@@ -22,8 +22,10 @@ function RegisterForm() {
   }
 
   return (
-    <Form onSubmit={handleSubmit}>
-        <Form.Group>
+    <div className="d-flex justify-content-center align-items-centerh-100">
+    <Form onSubmit={handleSubmit} className="border p-3">
+    <h1 className="text-center mb-3">Register</h1>
+        <Form.Group className="my-3">
     <Form.Label>Username</Form.Label>
     <Form.Control
       type="text"
@@ -33,7 +35,7 @@ function RegisterForm() {
       required
     />
   </Form.Group>
-      <Form.Group>
+      <Form.Group className="my-3">
         <Form.Label>Email</Form.Label>
         <Form.Control
           type="email"
@@ -44,7 +46,7 @@ function RegisterForm() {
         />
       </Form.Group>
 
-      <Form.Group>
+      <Form.Group className="my-3">
         <Form.Label>Password</Form.Label>
         <Form.Control
           type="password"
@@ -62,6 +64,7 @@ function RegisterForm() {
         Register
       </Button>
     </Form>
+    </div>
   );
 }
 

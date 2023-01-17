@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import { Form, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
@@ -9,6 +10,7 @@ function LoginForm() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -18,12 +20,13 @@ function LoginForm() {
         console.log(response);
         if (response.status === 200) {
           localStorage.setItem("token", response.data.token);
-          axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("token")}`;
           // decode the JWT token and retrieve the user's information
           const decoded = jwt_decode(localStorage.getItem("token"));
           console.log(decoded);
           // you can access the user's information like this:
-          localStorage.setItem("userInfo", {'userEmail':decoded.email, 'userName': decoded.username})
+          localStorage.setItem("userInfo", JSON.stringify(decoded))
+  
+          navigate("/");
       }
     } catch (error) {
         setError(error);
@@ -34,36 +37,43 @@ function LoginForm() {
   console.log(error);
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Form.Group>
-        <Form.Label>Email</Form.Label>
-        <Form.Control
-          type="email"
-          placeholder="Enter email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          required
-        />
-      </Form.Group>
-
-      <Form.Group>
-        <Form.Label>Password</Form.Label>
-        <Form.Control
-          type="password"
-          placeholder="Enter password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          required
-        />
-      </Form.Group>
-
-      {isLoading && <p>Loading...</p>}
-      {error && <p>{error.message}</p>}
-
-      <Button variant="primary" type="submit">
-        Login
-      </Button>
-    </Form>
+    <div className="d-flex justify-content-center align-items-center h-100">
+    <Form onSubmit={handleSubmit} className="border p-3">
+    <h1 className="text-center mb-3">Login</h1>
+     <Form.Group className="my-3">
+         <Form.Label>Email</Form.Label>
+         <Form.Control
+         type="email"
+         placeholder="Enter email"
+         value={email}
+         onChange={(event) => setEmail(event.target.value)}
+         required
+         />
+     </Form.Group>
+ 
+     <Form.Group className="my-3">
+         <Form.Label>Password</Form.Label>
+         <Form.Control
+         type="password"
+         placeholder="Enter password"
+         value={password}
+         onChange={(event) => setPassword(event.target.value)}
+         required
+         />
+     </Form.Group>
+ 
+     {isLoading && <p>Loading...</p>}
+     {error && <p>{error.message}</p>}
+ 
+     <Button variant="primary" type="submit" className="my-3">
+         Login
+     </Button>
+     <div className="text-center mt-3">
+         Don't have an account? 
+         <a href='/register'>Register</a>
+     </div>
+     </Form>
+ </div>
   );
 }
 
@@ -71,5 +81,3 @@ export default LoginForm;
 
 
 // ('test1@example.com', 'password1'),
-// ('test2@example.com', 'password2'),
-// ('test3@example.com', 'password3');

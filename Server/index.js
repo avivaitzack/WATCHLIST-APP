@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const router = express.Router();
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -96,4 +97,23 @@ app.post('/register', (req, res) => {
 });
 
 
-console.log(process.env.SECRET_KEY);
+router.post('/watchlist', async (req, res) => {
+    try {
+        let {userId, seriesId, dateAdded, status} = req.body;
+        let connection = await mysql.createConnection({
+            host: 'your_host',
+            user: 'your_user',
+            password: 'your_password',
+            database: 'your_database'
+        });
+        let [result] = await connection.execute(
+            'INSERT INTO watchlist (user_id, series_id, date_added, status) VALUES (?, ?, ?, ?)',
+            [userId, seriesId, dateAdded, status]
+        );
+        connection.end();
+        res.status(200).json({status:'success'});
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({status:'error', error:err});
+    }
+});
